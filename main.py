@@ -1,19 +1,34 @@
 #!/usr/bin/env python3
-"""The One-Line Laugh — a single funny line, written to /output/entry.txt.
-
-The joke: a smartwatch nags its owner to move more, so the owner solves
-the problem the only way a lazy person can — by moving the watch itself.
-"""
+"""The One-Line Laugh: a smartwatch joke, one line, written to /output/entry.txt."""
 
 import os
 
-LINE = "My smartwatch keeps telling me to move more, so I moved it to a drawer where it can't judge me."
+SETUP = "My smartwatch keeps telling me to move more,"
+PUNCHLINE = "so I moved it to a drawer where it can't judge me."
+
+OUTPUT_PATH = "/output/entry.txt"
+MAX_CHARS = 200
 
 
-def main() -> None:
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8") as f:
-        f.write(LINE)
+def validate_line(line):
+    if not line.strip():
+        raise ValueError("entry line must not be blank")
+    if len(line) > MAX_CHARS:
+        raise ValueError("entry line is %d chars, max %d" % (len(line), MAX_CHARS))
+    if "\n" in line or "\r" in line:
+        raise ValueError("entry must be a single line")
+    return line
+
+
+def compose_line(setup, punchline):
+    return setup + " " + punchline
+
+
+def main():
+    line = validate_line(compose_line(SETUP, PUNCHLINE))
+    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as handle:
+        handle.write(line)
 
 
 if __name__ == "__main__":
